@@ -23,9 +23,7 @@ my_url_params = {'location':'Manhattan', 'categories':'massage, All', 'sort_by':
 my_api_key = 'hCKY3B7kZZDUIkc7JiW5RM3RluzA562cAFztq2zGnaoax9bHYkZ8S_2vGkmg5FQ5snTcdhjN1TvMzjX89sLbLMmcN-n-APL3986KpquzNcSnhImY0GOrzXm25OaxXXYx'
 # a tuple of column names from a yelp call correspondindg to columns in 'businesses' table
 # bus_table_tuple = (business['id'], business['alias'], business['name'], business['review_count'], business['categories'][0]['alias'], business['rating'], business['location']['city'])
-bus_table_query = """INSERT INTO businesses
-    (business_id, alias, name, review_count, categories, rating, city)
-    VALUES (%s, %s, %s, %s, %s, %s, %s)"""
+
 
 
 
@@ -69,6 +67,9 @@ def create_tables(tables_dict):
 
 # Create var tuple for yelp reults ['businesses']
 def create_bus_tuple(response_dict_key):
+    for n in in range(len(data['businesses'].keys())):
+
+
     return (response_dict_key['id'], response_dict_key['alias'], response_dict_key['name'], response_dict_key['review_count'],
             response_dict_key['categories'][0]['alias'], response_dict_key['rating'], response_dict_key['location']['city'])
 
@@ -81,10 +82,22 @@ def yelp_call(url_params, api_key):
     return data
 
 # Function to parse results based on a given tuple(list of column headers corresponding to a table)
-def parse_results(results, table_tuple):
+# def parse_results(results, table_tuple):
+#     parsed_results = []
+#     for business in results['businesses']:
+#
+#         parsed_results.append(table_tuple)
+#     return parsed_results
+
+def parse_results(results):
     parsed_results = []
-    for business in results['businesses']:
-        parsed_results.append(table_tuple)
+    for business in data['businesses']:
+        if 'price' not in business.keys():
+            business['price'] = 'None'
+        else:
+            pass
+        entry_tup = (business['id'], business['alias'], business['name'], business['review_count'], business['categories'][0]['alias'], business['rating'], business['location']['city'])
+        parsed_results.append(entry_tup)
     return parsed_results
 
 # Function to insert results into a table based on the given query
@@ -117,7 +130,7 @@ def all_results(url_params, api_key, table_qry):
         print(f'parsed results and saved them to a list')
         try:
             # inserts into database by looping through a list of tuples(rows and a specified table query)
-            print(f'inserting the 50 redults into my table')
+            print(f'inserting the 50 results into my table')
             db_insert(parsed_results, table_qry)
         except:
             Exception

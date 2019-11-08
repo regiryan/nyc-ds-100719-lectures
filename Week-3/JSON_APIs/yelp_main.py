@@ -10,7 +10,7 @@ import json
 db_name = y.db_name
 bus_url_params = y.my_url_params
 # bus_table_tuple = y.bus_table_tuple
-bus_table_query = y.bus_table_query
+# bus_table_query = y.bus_table_query
 my_api_key = y.my_api_key
 
 
@@ -26,5 +26,8 @@ cursor = cnx.cursor(buffered=True)
 
 
 # bus_table_tuple = y.create_tuple(response_dict_key)
+bus_table_query = """INSERT INTO businesses
+    (business_id, alias, name, review_count, categories, rating, city)
+    VALUES (%s, %s, %s, %s, %s, %s, %s)"""
 
 y.all_results(bus_url_params , my_api_key, bus_table_query)
